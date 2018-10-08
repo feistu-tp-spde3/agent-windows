@@ -2,13 +2,13 @@
 
 std::unique_ptr<TCPConnection> tcpConnection;
 
-void TCPConnection::establishConnection(const asio::ip::address &address, int port, Configuration &config)
+void TCPConnection::establishConnection(const boost::asio::ip::address &address, int port, Configuration &config)
 {
 	std::cout << "[TCPConnection] Establishing connection!" << std::endl;
-	io_service = std::make_shared<asio::io_service>();
-	asio::ip::tcp::endpoint endpoint(address, port);
+	io_service = std::make_shared<boost::asio::io_service>();
+    boost::asio::ip::tcp::endpoint endpoint(address, port);
 
-	mSocket = std::make_shared<asio::ip::tcp::socket>(*io_service);
+	mSocket = std::make_shared<boost::asio::ip::tcp::socket>(*io_service);
 
 	try {
 		mSocket->connect(endpoint);
@@ -19,9 +19,9 @@ void TCPConnection::establishConnection(const asio::ip::address &address, int po
 	}
 
 	// odoslanie prvej spravy, ktorou sa identifikuje agent
-	asio::error_code error;
+    boost::system::error_code error;
 	const std::string msg = config.getAgentName() + "\n";
-	std::size_t bytesSent = asio::write(*mSocket, asio::buffer(msg), error);
+	std::size_t bytesSent = boost::asio::write(*mSocket, boost::asio::buffer(msg), error);
 	std::cout << "[TCPConnection] Sent identification message(" << bytesSent << " b): " << msg;
 
 	// ak sa podarilo spojit tak spustime vlakno na prijmanie sprav
@@ -38,13 +38,13 @@ void TCPConnection::establishConnection(const asio::ip::address &address, int po
 
 void TCPConnection::receiveMessage()
 {
-	asio::error_code error;
+    boost::system::error_code error;
 	char buffer[1000];
 	std::size_t bytesReceived{ 0 };
 	
 	while (bytesReceived == 0)
 	{
-		bytesReceived = mSocket->read_some(asio::buffer(buffer), error);
+		bytesReceived = mSocket->read_some(boost::asio::buffer(buffer), error);
 
 		if (bytesReceived != 0)
 		{

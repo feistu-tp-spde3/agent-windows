@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <asio.hpp>
+#include <boost/asio.hpp>
 
 // globalny zoznam kolektorov
 class Collector;
