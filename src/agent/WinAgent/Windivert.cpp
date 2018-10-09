@@ -2,7 +2,7 @@
 
 Windivert::Windivert()
 {
-
+    mPacket.resize(0xFFFF);
 }
 
 Windivert::~Windivert()
