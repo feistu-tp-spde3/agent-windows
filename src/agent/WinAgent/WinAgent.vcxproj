@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\boost\include\boost-1_68;D:\WinDivert-1.4.3-A\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\boost\lib;D:\WinDivert-1.4.3-A\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(BOOST_INCLUDE_PATH);$(WINDIVERT_INCLUDE_PATH);$(IncludePath)</IncludePath>
+    <LibraryPath>$(BOOST_LIB_PATH);$(WINDIVERT_LIB_X86_PATH);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\asio\include;C:\windivert\include;$(IncludePath)</IncludePath>

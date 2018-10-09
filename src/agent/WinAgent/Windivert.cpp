@@ -16,8 +16,6 @@ Windivert::~Windivert()
 
 bool Windivert::init(const Configuration &config)
 {
-	bool ret{ true };
-
 	std::cout << "[Windivert] Initializing windivert from configuration file" << std::endl;
 
 	// vytvorenie windivert filtra
@@ -25,36 +23,31 @@ bool Windivert::init(const Configuration &config)
 
 	if (mWindivert == INVALID_HANDLE_VALUE)
 	{
-		ret = false;
 		std::cout << "[Windivert] WinDivertOpen invalid handle value!" << std::endl;
-		return ret;
+		return false;
 	}
 
 	// nastavenie velkosti fronty
 	if (!WinDivertSetParam(mWindivert, WINDIVERT_PARAM_QUEUE_LEN, config.getQueueLenght()))
 	{
-		ret = false;
 		std::cout << "[Windivert] Failed to set queue length!" << std::endl;
-		return ret;
+		return false;
 	}
 
 	// nastavenie casu paketu
 	if (!WinDivertSetParam(mWindivert, WINDIVERT_PARAM_QUEUE_TIME, config.getQueueTime()))
 	{
-		ret = false;
 		std::cout << "[Windivert] Failed to set queue time!" << std::endl;
-		return ret;
+		return false;
 	}
 
 	mPacketFile += config.getDirectory() + "packets.txt";
 
-	return ret;
+	return true;
 }
 
 bool Windivert::init(const std::string &filter, const Configuration &config)
 {
-	bool ret{ true };
-
 	std::cout << "[Windivert] Initializing windivert from client filter" << std::endl;
 
 	// vytvorenie windivert filtra
@@ -62,28 +55,25 @@ bool Windivert::init(const std::string &filter, const Configuration &config)
 
 	if (mWindivert == INVALID_HANDLE_VALUE)
 	{
-		ret = false;
 		std::cout << "[Windivert] WinDivertOpen invalid handle value!" << std::endl;
-		return ret;
+		return false;
 	}
 
 	// nastavenie velkosti fronty
 	if (!WinDivertSetParam(mWindivert, WINDIVERT_PARAM_QUEUE_LEN, config.getQueueLenght()))
 	{
-		ret = false;
 		std::cout << "[Windivert] Failed to set queue length!" << std::endl;
-		return ret;
+		return false;
 	}
 
 	// nastavenie casu paketu
 	if (!WinDivertSetParam(mWindivert, WINDIVERT_PARAM_QUEUE_TIME, config.getQueueTime()))
 	{
-		ret = false;
 		std::cout << "[Windivert] Failed to set queue time!" << std::endl;
-		return ret;
+		return false;
 	}
 
-	return ret;
+	return true;
 }
 
 void Windivert::run(const Configuration &config)
@@ -98,7 +88,7 @@ void Windivert::run(const Configuration &config)
 
 		if (mEnabled)
 		{
-			if (!WinDivertRecv(mWindivert, mPacket.data(), 0xFFFF, &address, &packetLenght))
+			if (!WinDivertRecv(mWindivert, mPacket.data(), mPacket.size(), &address, &packetLenght))
 			{
 				std::cout << "[Windivert] Failed to open packet!" << std::endl;
 				continue;
