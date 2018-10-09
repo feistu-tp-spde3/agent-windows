@@ -7,6 +7,7 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
+#include <vector>
 
 class Windivert {
 private:
@@ -14,7 +15,7 @@ private:
 	HANDLE mWindivert;
 
 	// pointer na data packetu
-	unsigned char *mPacket;
+    std::vector<unsigned char> mPacket;
 
 	// casovac pre odosielnanie packetov
 	std::clock_t start;

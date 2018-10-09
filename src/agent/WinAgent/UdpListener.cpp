@@ -10,15 +10,17 @@ void UdpListener::run(Configuration &config)
 
 		udpSocket.set_option(boost::asio::socket_base::broadcast(true));
         boost::asio::ip::udp::endpoint senderEndpoint;
-		int senderPort{ -1 };
-
-		char buffer[1000];
-		std::size_t bytesReceived{ 0 };
-		bool messageReceived{ false };
+		int senderPort = -1;
+        const int bufferSize = 1000;
+        
+		char buffer[bufferSize];
+		std::size_t bytesReceived = 0;
+		bool messageReceived = false;
 
 		while (!messageReceived)
 		{
-			try {
+			try 
+            {
 				bytesReceived = udpSocket.receive_from(boost::asio::buffer(buffer), senderEndpoint);
 			}
 			catch (std::exception &e)

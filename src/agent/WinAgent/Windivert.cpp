@@ -2,16 +2,13 @@
 
 Windivert::Windivert()
 {
-	mPacket = new unsigned char[0xFFFF];
+
 }
 
 Windivert::~Windivert()
 {
 	if (mWindivert)
 		WinDivertClose(mWindivert);
-
-	if (mPacket)
-		delete[]mPacket;
 
 	if (mOutput.is_open())
 		mOutput.close();
@@ -101,13 +98,13 @@ void Windivert::run(const Configuration &config)
 
 		if (mEnabled)
 		{
-			if (!WinDivertRecv(mWindivert, mPacket, 0xFFFF, &address, &packetLenght))
+			if (!WinDivertRecv(mWindivert, mPacket.data(), 0xFFFF, &address, &packetLenght))
 			{
 				std::cout << "[Windivert] Failed to open packet!" << std::endl;
 				continue;
 			}
 
-			WinDivertHelperParsePacket(mPacket, packetLenght, &ip_header,
+			WinDivertHelperParsePacket(mPacket.data(), packetLenght, &ip_header,
 				&ipv6_header, &icmp_header, &icmpv6_header, &tcp_header,
 				&udp_header, NULL, NULL);
 
@@ -145,7 +142,7 @@ void Windivert::run(const Configuration &config)
 						protocol = "ICMP";
 					}
 
-					writePacket(mPacket, packetLenght, protocol, src_addr, dst_addr, src_port, dst_port);
+					writePacket(mPacket.data(), packetLenght, protocol, src_addr, dst_addr, src_port, dst_port);
 				}
 			}
 

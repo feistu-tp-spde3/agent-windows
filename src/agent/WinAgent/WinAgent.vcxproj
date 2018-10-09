@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\asio\include;C:\windivert\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\windivert\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\boost\include\boost-1_68;D:\WinDivert-1.4.3-A\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\boost\lib;D:\WinDivert-1.4.3-A\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\asio\include;C:\windivert\include;$(IncludePath)</IncludePath>
@@ -81,7 +81,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ASIO_STANDALONE;ASIO_HAS_STD_TYPE_TRAITS;ASIO_HAS_STD_ADDRESSOF;ASIO_HAS_STD_ARRAY;ASIO_HAS_CSTDINT;ASIO_HAS_STD_SHARED_PTR;HAVE_STRUCT_TIMESPEC;ASIO_HAS_STD_CHRONO;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDIVERT_NO_DEPRECATED_WARNINGS;_CRT_SECURE_NO_WARNINGS;ASIO_STANDALONE;ASIO_HAS_STD_TYPE_TRAITS;ASIO_HAS_STD_ADDRESSOF;ASIO_HAS_STD_ARRAY;ASIO_HAS_CSTDINT;ASIO_HAS_STD_SHARED_PTR;HAVE_STRUCT_TIMESPEC;ASIO_HAS_STD_CHRONO;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>WinDivert.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>

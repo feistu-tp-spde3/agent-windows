@@ -39,8 +39,9 @@ void TCPConnection::establishConnection(const boost::asio::ip::address &address,
 void TCPConnection::receiveMessage()
 {
     boost::system::error_code error;
-	char buffer[1000];
-	std::size_t bytesReceived{ 0 };
+    const int bufferSize = 1000;
+	char buffer[bufferSize];
+	std::size_t bytesReceived = 0;
 	
 	while (bytesReceived == 0)
 	{

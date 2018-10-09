@@ -4,9 +4,11 @@
 std::vector<Collector> collectors;
 
 Collector::Collector(const std::string &ip, const std::string &port)
+    : mIPAddress(ip)
+    , mPort(port)
+    , mTimeout(5000)
 {
-	mIPAddress = ip;
-	mPort = port;
+
 }
 
 void Collector::closeHandles()
@@ -19,7 +21,6 @@ bool Collector::send(const Configuration &configuration)
 {
 	std::string path = configuration.getDirectory() + "packets.txt";
 	std::string arguments = "HBaseSender.exe " + path + " " + mIPAddress + " " + mPort;
-	char *args = (char*)arguments.c_str();
 
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInformation;
@@ -28,7 +29,7 @@ bool Collector::send(const Configuration &configuration)
 	ZeroMemory(&startupInfo, sizeof(startupInfo));
 	ZeroMemory(&processInformation, sizeof(processInformation));
 
-	if (!CreateProcess("HBaseSender.exe", args, NULL, FALSE, 0, NULL, NULL, NULL, &startupInfo, &processInformation))
+	if (!CreateProcess("HBaseSender.exe", (char*)arguments.c_str(), NULL, FALSE, 0, NULL, NULL, NULL, &startupInfo, &processInformation))
 	{
 		std::cout << "[Collector] Failed to create process HBaseSender.exe" << std::endl;
 		return false;

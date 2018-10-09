@@ -18,7 +18,7 @@ private:
 	std::string mPort;
 
 	// timeout(v ms)
-	DWORD mTimeout{ 5000 };
+	DWORD mTimeout;
 
 	// info o spustanom procese
 	STARTUPINFO startupInfo;

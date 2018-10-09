@@ -84,7 +84,8 @@ void Configuration::parse()
 
 void Configuration::getWorkingDirectory()
 {
-	char path[200];
+    const int pathSize = 200;
+	char path[pathSize];
 
 	if (_getcwd(path, sizeof(path)) == NULL)
 	{
@@ -150,10 +151,13 @@ void Configuration::createFilter()
 std::string Configuration::getLocalIP() const
 {
 	WSADATA wsaData;
-	WSAStartup(0x101, &wsaData);
+    const WORD requestedVersion = 0x101;
+    const int hostnameLenght = 255;
+    char hostName[hostnameLenght];
 
-	char hostName[255];
-	gethostname(hostName, 255);
+	WSAStartup(requestedVersion, &wsaData);
+	gethostname(hostName, hostnameLenght);
+
 	struct hostent *host_entry;
 	host_entry = gethostbyname(hostName);
 	char *ip = inet_ntoa(*(struct in_addr*)*host_entry->h_addr_list);
