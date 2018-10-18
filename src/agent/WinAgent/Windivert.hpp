@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PacketSniffer.h"
 #include "Collector.hpp"
 #include "Configuration.hpp"
 
@@ -9,7 +10,8 @@
 #include <iomanip>
 #include <vector>
 
-class Windivert {
+class Windivert : public PacketSniffer 
+{
 private:
 	// handle na windivert
 	HANDLE mWindivert;
@@ -57,9 +59,9 @@ public:
 	~Windivert();
 
 	// inicializacia
-	bool init(const Configuration &config);
+	bool init(const Configuration &config) override;
 	bool init(const std::string &filter, const Configuration &config);
 
 	// spustenie zachytavania
-	void run(const Configuration &config);
+	void run(const Configuration &config) override;
 };

@@ -10,7 +10,8 @@ void TCPConnection::establishConnection(const boost::asio::ip::address &address,
 
 	mSocket = std::make_shared<boost::asio::ip::tcp::socket>(*io_service);
 
-	try {
+	try 
+    {
 		mSocket->connect(endpoint);
 	}
 	catch (std::exception &e)
@@ -27,7 +28,8 @@ void TCPConnection::establishConnection(const boost::asio::ip::address &address,
 	// ak sa podarilo spojit tak spustime vlakno na prijmanie sprav
 	if (mSocket->is_open())
 	{
-		mThread = std::thread([this]() {
+		mThread = std::thread([this]() 
+        {
 			while (true)
 			{
 				this->receiveMessage();

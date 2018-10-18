@@ -4,43 +4,36 @@
 #include <iostream>
 #include <mutex>
 
-// nazov konfiguracneho suboru
-const std::string configurationFileName{ "config_agent.xml" };
-
 // mutex na riadenie sprav od klienta
 extern std::mutex messageControlMutex;
 
 // sprava od klienta
 extern std::string clientMessage;
 
-class Configuration {
+class Configuration 
+{
 private:
-	std::string mAgentName{ "" };		// nazov agenta
-	std::string mIPProtocol{ "" };		// filtrovanie podla IP protokolu(IPv4, IPv6)
-	std::string mSrcAddr{ "" };			// filtrovanie podla zdrojovej adresy
-	std::string mDstAddr{ "" };			// filtrovanie podla cielovej adresy
-	std::string mCoreProtocol{ "" };	// filtrovanie podla vnoreneho protokolu(TCP,UDP,...)
-	std::string mSrcPort{ "" };			// filtrovanie podla zdrojoveho portu
-	std::string mDstPort{ "" };			// filtrovanie podla cieloveho portu
-	std::string mBound{ "" };			// filtrovanie prichadzajucich/odchadzajucich paketov
+	std::string mAgentName;		    // nazov agenta
+	std::string mIPProtocol;		// filtrovanie podla IP protokolu(IPv4, IPv6)
+	std::string mSrcAddr;			// filtrovanie podla zdrojovej adresy
+	std::string mDstAddr;			// filtrovanie podla cielovej adresy
+	std::string mCoreProtocol;	    // filtrovanie podla vnoreneho protokolu(TCP,UDP,...)
+	std::string mSrcPort;			// filtrovanie podla zdrojoveho portu
+	std::string mDstPort;			// filtrovanie podla cieloveho portu
+	std::string mBound;			    // filtrovanie prichadzajucich/odchadzajucich paketov
+    const std::string mconfigurationFilename;
 
-	unsigned mQueueLength{ 8192 };		// velkost fronty na pakety
-	unsigned mQueueTime{ 2048 };		// maximalny cas paketu vo fronte
-	unsigned mSendingTime{ 60 };			// cas po ktorom sa odosielaju data na kolektor
+	unsigned mQueueLength;		    // velkost fronty na pakety
+	unsigned mQueueTime;		    // maximalny cas paketu vo fronte
+	unsigned mSendingTime;			// cas po ktorom sa odosielaju data na kolektor
 
-	std::string mDirectory{ "Data\\" };		// adresar kam sa ukladaju pakety
-
-	// aktualny pracovny adresar
-	std::string mWorkingDirectory{ "" };
+	std::string mDirectory;		    // adresar kam sa ukladaju pakety
 
 	// filter pre windivert
-	std::string mWindivertFilter{ "" };
+	std::string mFilter;
 
 	// parsovanie xml dokumentu
 	void parse();
-
-	// ziskanie aktualneho pracovneho adresara
-	void getWorkingDirectory();
 
 	// vytvorenie filtra
 	void createFilter();
@@ -52,10 +45,9 @@ private:
 	std::string getLocalIP() const;
 
 public:
-	Configuration();
+	Configuration(const std::string& configurationFilename);
 
-	std::string getWindivertFilter() const { return mWindivertFilter; }
-	std::string getWorkingDirectory() const { return mWorkingDirectory; }
+	std::string getFilter() const { return mFilter; }
 
 	unsigned getQueueLenght() const { return mQueueLength; }
 	unsigned getQueueTime() const { return mQueueTime; }

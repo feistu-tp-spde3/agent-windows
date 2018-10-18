@@ -7,11 +7,15 @@ Windivert::Windivert()
 
 Windivert::~Windivert()
 {
-	if (mWindivert)
-		WinDivertClose(mWindivert);
-
-	if (mOutput.is_open())
-		mOutput.close();
+    if (mWindivert)
+    {
+        WinDivertClose(mWindivert);
+    }
+		
+    if (mOutput.is_open())
+    {
+        mOutput.close();
+    }
 }
 
 bool Windivert::init(const Configuration &config)
@@ -19,7 +23,7 @@ bool Windivert::init(const Configuration &config)
 	std::cout << "[Windivert] Initializing windivert from configuration file" << std::endl;
 
 	// vytvorenie windivert filtra
-	mWindivert = WinDivertOpen(config.getWindivertFilter().c_str(), WINDIVERT_LAYER_NETWORK, 0, WINDIVERT_FLAG_SNIFF);
+	mWindivert = WinDivertOpen(config.getFilter().c_str(), WINDIVERT_LAYER_NETWORK, 0, WINDIVERT_FLAG_SNIFF);
 
 	if (mWindivert == INVALID_HANDLE_VALUE)
 	{
@@ -82,7 +86,7 @@ void Windivert::run(const Configuration &config)
 
 	std::cout << "[Windivert] Starting windivert" << std::endl;
 
-	while (TRUE)
+	while (true)
 	{
 		messageProcess(config);
 
@@ -151,9 +155,13 @@ void Windivert::run(const Configuration &config)
 				mOutput.close();
 
 				// skusame postupne vsetky kolektory az kym sa nepodari odoslat data
-				for (auto &col : collectors)
-					if (col.send(config))
-						break;
+                for (auto &col : collectors)
+                {
+                    if (col.send(config))
+                    {
+                        break;
+                    }
+                }	
 			}
 		}
 	}
@@ -163,7 +171,7 @@ void Windivert::messageProcess(const Configuration &config)
 {
 	messageControlMutex.lock();
 
-	if (clientMessage != "")
+	if (!clientMessage.empty())
 	{
 		if (clientMessage == "start")
 		{
@@ -194,9 +202,11 @@ void Windivert::writePacket(unsigned char *data, UINT size, const std::string &p
 	time_t packetTime = convert(st);
 
 	// otvorenie streamu na zapis
-	if (!mOutput.is_open())
-		mOutput.open(mPacketFile, std::ofstream::out | std::ofstream::trunc);
-	
+    if (!mOutput.is_open())
+    {
+        mOutput.open(mPacketFile, std::ofstream::out | std::ofstream::trunc);
+    }
+		
 	mOutput << std::dec << packetTime << "\n";
 	mOutput << protocol << "\n";
 	mOutput << src_addr << "\n";

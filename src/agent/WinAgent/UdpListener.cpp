@@ -3,10 +3,12 @@
 
 void UdpListener::run(Configuration &config)
 {
-	mThread = std::thread([&config]() {
+	mThread = std::thread([&config]() 
+    {
 		boost::asio::io_service io_service;
         boost::system::error_code error;
-        boost::asio::ip::udp::socket udpSocket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), 8888));
+        const int udpDefaultPort = 8888;
+        boost::asio::ip::udp::socket udpSocket(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), udpDefaultPort));
 
 		udpSocket.set_option(boost::asio::socket_base::broadcast(true));
         boost::asio::ip::udp::endpoint senderEndpoint;

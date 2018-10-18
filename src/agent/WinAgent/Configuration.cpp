@@ -5,13 +5,20 @@
 #include <direct.h>
 #include <Windows.h>
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
+
 std::mutex messageControlMutex;
 std::string clientMessage{ "" };
 
-Configuration::Configuration()
+Configuration::Configuration(const std::string& configurationFilename)
+    : mQueueLength(8192)
+    , mQueueTime(2048)
+    , mSendingTime(60)
+    , mDirectory("Data/")
+    , mconfigurationFilename(configurationFilename)
 {
 	std::cout << "[Configuration] Creating configuration" << std::endl;
-	getWorkingDirectory();
 	parse();
 	createFilter();
 	createDirectory();
@@ -19,9 +26,11 @@ Configuration::Configuration()
 
 void Configuration::parse()
 {
-	std::string path = mWorkingDirectory + "\\" + configurationFileName;
+    boost::filesystem::path path(boost::filesystem::current_path());
+    
+    std::string fullPath = path.string() + "/" + mconfigurationFilename;
 	pugi::xml_document configurationFile;
-	pugi::xml_parse_result result = configurationFile.load_file(path.c_str());
+	pugi::xml_parse_result result = configurationFile.load_file(fullPath.c_str());
 
 	if (result.status == pugi::xml_parse_status::status_ok)
 	{
@@ -73,79 +82,90 @@ void Configuration::parse()
 				collectors.push_back(newCollector);
 			}
 
-			if (sender.child("SendingTime"))
-				mSendingTime = atoi(sender.child("SendingTime").text().as_string());
+            if (sender.child("SendingTime"))
+            {
+                mSendingTime = atoi(sender.child("SendingTime").text().as_string());
+            }
 		}
 	}
-	else {
+	else 
+    {
 		std::cout << "[Configuration] Could not parse configuration file: " << result.description() << std::endl;
-	}
-}
-
-void Configuration::getWorkingDirectory()
-{
-    const int pathSize = 200;
-	char path[pathSize];
-
-	if (_getcwd(path, sizeof(path)) == NULL)
-	{
-		std::cout << "[Configuration] Failed to retrieve working directory!" << std::endl;
-	} else {
-		mWorkingDirectory = std::string(path);
 	}
 }
 
 void Configuration::createFilter()
 {
-	if (mBound != "")
-		mWindivertFilter += mBound;
+    if (!mBound.empty())
+    {
+        mFilter += mBound;
+    }
+		
+    if (!mIPProtocol.empty())
+    {
+        if (mIPProtocol == "IPv4")
+        {
+            mFilter += " and ip";
+        }
 
-	if (mIPProtocol != "")
-	{
-		if (mIPProtocol == "IPv4")
-			mWindivertFilter += " and ip";
-
-		if (mIPProtocol == "IPv6")
-			mWindivertFilter += " and ipv6";
+        if (mIPProtocol == "IPv6")
+        {
+            mFilter += " and ipv6";
+        }
 	}
 
-	if (mSrcAddr != "")
-		mWindivertFilter += " and ip.SrcAddr == " + mSrcAddr;
+    if (!mSrcAddr.empty())
+    {
+        mFilter += " and ip.SrcAddr == " + mSrcAddr;
+    }
+		
 
-	if (mDstAddr != "")
-		mWindivertFilter += " and ip.DstAddr == " + mDstAddr;
+    if (!mDstAddr.empty())
+    {
+        mFilter += " and ip.DstAddr == " + mDstAddr;
+    }
+		
 
-	if (mCoreProtocol != "")
+	if (!mCoreProtocol.empty())
 	{
 		if (mCoreProtocol == "TCP")
 		{
-			if (mSrcPort != "")
-				mWindivertFilter += "and tcp.SrcPort == " + mSrcPort;
-			if (mDstPort != "")
-				mWindivertFilter += "and tcp.DstPort == " + mDstPort;
-
-		} 
+            if (!mSrcPort.empty())
+            {
+                mFilter += "and tcp.SrcPort == " + mSrcPort;
+            }
+				
+            if (!mDstPort.empty())
+            {
+                mFilter += "and tcp.DstPort == " + mDstPort;
+            }
+		}
 		else if (mCoreProtocol == "UDP")
 		{
-			if (mSrcPort != "")
-				mWindivertFilter += "and udp.SrcPort == " + mSrcPort;
-			if (mDstPort != "")
-				mWindivertFilter += "and udp.DstPort == " + mDstPort;
+            if (!mSrcPort.empty())
+            {
+                mFilter += "and udp.SrcPort == " + mSrcPort;
+            }
+				
+            if (!mDstPort.empty())
+            {
+                mFilter += "and udp.DstPort == " + mDstPort;
+            }	
 		} 
 		else if (mCoreProtocol == "ICMP")
 		{
-			mWindivertFilter += " and icmp";
+			mFilter += " and icmp";
 		}
 	}
 
 	// v pripade ak sme nemali nastaveny konfiguracny subor filtrujeme celu prevadzku
-	if (mWindivertFilter == "")
+	if (mFilter.empty())
 	{
 		std::string ip = getLocalIP();
-		mWindivertFilter = "ip.SrcAddr == " + ip + " or ip.DstAddr == " + ip;
+		mFilter = "ip.SrcAddr == " + ip + " or ip.DstAddr == " + ip;
 	}
 
-	std::cout << "[Configuration] Filter created from configuration file: " << mWindivertFilter << std::endl;
+	std::cout << "[Configuration] Filter created from configuration file: " << mFilter << std::endl;
 }
 
 std::string Configuration::getLocalIP() const
@@ -168,12 +188,15 @@ std::string Configuration::getLocalIP() const
 
 void Configuration::createDirectory()
 {
-	std::string dataPath = mWorkingDirectory + "\\" + mDirectory;
+    boost::filesystem::path path(boost::filesystem::current_path());
+	std::string dataPath = path.string() + "\\" + mDirectory;
 
 	int ret = _mkdir(dataPath.c_str());
 	
-	if (ret == EEXIST)
-		std::cout << "[Configuration] Directory " << dataPath << " already exists!" << std::endl;
+    if (ret == EEXIST)
+    {
+        std::cout << "[Configuration] Directory " << dataPath << " already exists!" << std::endl;
+    }
 	else if (ret == ENOENT)
 	{
 		std::cout << "[Configuration] Path " << dataPath << " was not found!" << std::endl;

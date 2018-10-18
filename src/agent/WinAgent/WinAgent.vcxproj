@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="Collector.cpp" />
     <ClCompile Include="Configuration.cpp" />
+    <ClCompile Include="LinuxPacketSniffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="TCPConnection.cpp" />
@@ -134,6 +135,8 @@
   <ItemGroup>
     <ClInclude Include="Collector.hpp" />
     <ClInclude Include="Configuration.hpp" />
+    <ClInclude Include="LinuxPacketSniffer.h" />
+    <ClInclude Include="PacketSniffer.h" />
     <ClInclude Include="pugiconfig.hpp" />
     <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="TCPConnection.hpp" />
