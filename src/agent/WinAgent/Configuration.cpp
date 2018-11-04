@@ -29,6 +29,7 @@ void Configuration::parse()
     boost::filesystem::path path(boost::filesystem::current_path());
     
     std::string fullPath = path.string() + "/" + mconfigurationFilename;
+    std::cout << fullPath << "\n";
 	pugi::xml_document configurationFile;
 	pugi::xml_parse_result result = configurationFile.load_file(fullPath.c_str());
 
@@ -59,8 +60,10 @@ void Configuration::parse()
 				mDstPort = agent.child("DstPort").text().as_string();
 			if (agent.child("Bound"))
 				mBound = agent.child("Bound").text().as_string();
-			if (agent.child("QueueLength"))
-				mQueueLength = agent.child("QueueLength").text().as_uint();
+            if (agent.child("QueueLength")) {
+                mQueueLength = agent.child("QueueLength").text().as_uint();
+                std::cout << mQueueLength << "\n";
+            }
 			if (agent.child("QueueTime"))
 				mQueueTime = agent.child("QueueTime").text().as_uint();
 			if (agent.child("Directory"))

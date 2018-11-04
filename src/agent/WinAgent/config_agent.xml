@@ -2,12 +2,13 @@
 
 <Configuration>
 	<Sender>
-		<Collector>147.175.98.24:9999</Collector>
+		<Collector>127.0.0.1:9999</Collector>
 		<SendingTime>10</SendingTime>
 	</Sender>
 
 	<Agent>
 		<Name>AgentA</Name>
+		<QueueLength>10000</QueueLength>
 		<!--<IP_Protocol>IPv4</IP_Protocol>-->
 		<!--<SrcAddr>192.168.1.1</SrcAddr>-->
 		<!--<DstAddr>192.168.10.10</DstAddr>-->

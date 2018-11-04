@@ -24,13 +24,13 @@ bool Windivert::init(const Configuration &config)
 
 	// vytvorenie windivert filtra
 	mWindivert = WinDivertOpen(config.getFilter().c_str(), WINDIVERT_LAYER_NETWORK, 0, WINDIVERT_FLAG_SNIFF);
-
+    
 	if (mWindivert == INVALID_HANDLE_VALUE)
 	{
 		std::cout << "[Windivert] WinDivertOpen invalid handle value!" << std::endl;
 		return false;
 	}
-
+    
 	// nastavenie velkosti fronty
 	if (!WinDivertSetParam(mWindivert, WINDIVERT_PARAM_QUEUE_LEN, config.getQueueLenght()))
 	{

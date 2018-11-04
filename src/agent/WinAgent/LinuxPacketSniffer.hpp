@@ -1,7 +1,7 @@
 #pragma once
 //TODO
 
-#include "PacketSniffer.h"
+#include "PacketSniffer.hpp"
 
 class LinuxPacketSniffer : public PacketSniffer
 {
