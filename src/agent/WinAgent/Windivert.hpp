@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PacketSniffer.h"
+#include "PacketSniffer.hpp"
 #include "Collector.hpp"
 #include "Configuration.hpp"
 

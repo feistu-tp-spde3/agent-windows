@@ -1,4 +1,4 @@
-#include "LinuxPacketSniffer.h"
+#include "LinuxPacketSniffer.hpp"
 //TODO
 bool LinuxPacketSniffer::init(const Configuration& config)
 {
